@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // User profile documents: Only owner can read/write their own profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // User favorites subcollection: strictly owned by the authenticated user
+      match /favorites/{speciesId} {
+        allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Species catalog: Public read access for all users; write restricted to administrators
+    match /species/{speciesId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Educational conservation articles: Public read access; write restricted to administrators
+    match /educational_content/{contentId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+  }
+}
