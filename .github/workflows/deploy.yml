@@ -38,7 +38,7 @@ jobs:
         run: flutter test
 
       - name: Build Flutter Web
-        run: flutter build web --release --base-href ./
+        run: flutter build web --release --base-href /Endangered-Species-Gallery/
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
